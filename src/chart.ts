@@ -1,10 +1,10 @@
-import * as d3 from 'd3';
+import { select as d3select } from 'd3-selection';
+import { linkHorizontal as d3linkHorizontal } from 'd3-shape';
 
 import { NODE_HEIGHT, NODE_WIDTH } from '@app/constants';
 import { IData } from '@app/models';
 
-const diagonal = d3
-  .linkHorizontal<d3.HierarchyPointLink<IData>, d3.HierarchyPointNode<IData>>()
+const diagonal = d3linkHorizontal<d3.HierarchyPointLink<IData>, d3.HierarchyPointNode<IData>>()
   .x((d) => d.y)
   .y((d) => d.x);
 
@@ -34,12 +34,12 @@ export const render = (
     .join('g')
     .attr('transform', (d) => `translate(${d.y},${d.x})`)
     .on('mouseover', (d, i, nodes) => {
-      d3.select(nodes[i])
+      d3select(nodes[i])
         .select('rect')
         .attr('fill', '#999');
     })
     .on('mouseout', (d, i, nodes) => {
-      d3.select(nodes[i])
+      d3select(nodes[i])
         .select('rect')
         .attr('fill', 'none');
     });
