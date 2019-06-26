@@ -1,5 +1,6 @@
 import * as d3 from 'd3';
 
+import { NODE_HEIGHT, NODE_WIDTH } from '@app/constants';
 import { IData } from '@app/models';
 
 const diagonal = d3
@@ -21,7 +22,7 @@ export const render = (
     .selectAll('path')
     .data(root.links())
     .join('path')
-    .attr('d', diagonal);
+    .attr('d', (d) => diagonal({ ...d, source: { ...d.source, y: d.source.y + NODE_WIDTH } }));
 
   const node = container
     .append('g')
@@ -35,14 +36,33 @@ export const render = (
 
   node
     .append('circle')
+    .filter((d) =>  Boolean(d.parent))
     .attr('fill', (d) => (d.children ? '#555' : '#999'))
-    .attr('r', 2.5);
+    .attr('r', 4);
+
+  node
+    .append('circle')
+    .filter((d) =>  Boolean(d.children))
+    .attr('cx', NODE_WIDTH)
+    .attr('fill', (d) => (d.children ? '#555' : '#999'))
+    .attr('r', 4);  
+
+  node
+    .append('rect')
+    .attr('x', 0)
+    .attr('y', -NODE_HEIGHT / 2)
+    .attr('fill', 'none')
+    .attr('width', 200)
+    .attr('rx', 6)
+    .attr('height', NODE_HEIGHT)
+    .attr('stroke-width', 3)
+    .attr('stroke', (d) => (d.children ? '#555' : '#999'));
 
   node
     .append('text')
     .attr('dy', '0.31em')
-    .attr('x', (d) => (d.children ? -6 : 6))
-    .attr('text-anchor', (d) => (d.children ? 'end' : 'start'))
+    .attr('x', 6)
+    .attr('text-anchor', 'start')
     .text((d) => d.data.name)
     .clone(true)
     .lower()

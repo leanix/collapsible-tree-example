@@ -3,6 +3,7 @@ import '@assets/reset.css';
 import * as d3 from 'd3';
 
 import { render } from '@app/chart';
+import { NODE_HEIGHT } from '@app/constants';
 import { IData, ISize } from '@app/models';
 
 (async () => {
@@ -13,7 +14,7 @@ import { IData, ISize } from '@app/models';
     const width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
 
     const size: ISize = {
-      dx: 40,
+      dx: NODE_HEIGHT + 10,
       dy: width / (hierarchy.height + 1)
     }  
        
