@@ -32,20 +32,30 @@ export const render = (
     .selectAll('g')
     .data(root.descendants())
     .join('g')
-    .attr('transform', (d) => `translate(${d.y},${d.x})`);
+    .attr('transform', (d) => `translate(${d.y},${d.x})`)
+    .on('mouseover', (d, i, nodes) => {
+      d3.select(nodes[i])
+        .select('rect')
+        .attr('fill', '#999');
+    })
+    .on('mouseout', (d, i, nodes) => {
+      d3.select(nodes[i])
+        .select('rect')
+        .attr('fill', 'none');
+    });
 
   node
     .append('circle')
-    .filter((d) =>  Boolean(d.parent))
+    .filter((d) => Boolean(d.parent))
     .attr('fill', (d) => (d.children ? '#555' : '#999'))
     .attr('r', 4);
 
   node
     .append('circle')
-    .filter((d) =>  Boolean(d.children))
+    .filter((d) => Boolean(d.children))
     .attr('cx', NODE_WIDTH)
     .attr('fill', (d) => (d.children ? '#555' : '#999'))
-    .attr('r', 4);  
+    .attr('r', 4);
 
   node
     .append('rect')
