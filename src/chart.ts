@@ -41,7 +41,7 @@ export const render = (
     .on('mouseout', (d, i, nodes) => {
       d3select(nodes[i])
         .select('rect')
-        .attr('fill', 'none');
+        .attr('fill', 'white');
     });
 
   node
@@ -61,7 +61,7 @@ export const render = (
     .append('rect')
     .attr('x', 0)
     .attr('y', -NODE_HEIGHT / 2)
-    .attr('fill', 'none')
+    .attr('fill', 'white')
     .attr('width', 200)
     .attr('rx', 6)
     .attr('height', NODE_HEIGHT)
