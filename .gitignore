@@ -1,0 +1,20 @@
+# dependencies
+.npm
+node_modules/
+
+# testing
+coverage
+e2e-temp-folder
+
+# production
+dist/
+.env
+
+# misc
+.DS_Store
+.idea
+.vscode
+.cache
+logs
+*.log
+npm-debug.log*
