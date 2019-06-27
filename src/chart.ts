@@ -10,7 +10,7 @@ export const render = (selector: string, root: d3.HierarchyPointNode<IData>, wid
   
   const svg = d3select(selector)
     .append('svg')
-    .attr('viewBox', [0, 0, width, y1 - y0].join(' '));
+    .attr('viewBox', [0, 0, width, y1 - y0 + size.dy * 2].join(' '));
 
   const container = svg.append('g').attr('transform', `translate(${10},${size.dy - y0})`);
 
