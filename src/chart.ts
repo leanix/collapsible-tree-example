@@ -1,17 +1,19 @@
 import { select as d3select, selectAll as d3selectAll } from 'd3-selection';
-import { linkHorizontal as d3linkHorizontal } from 'd3-shape';
 
 import { NODE_HEIGHT, NODE_WIDTH } from '@app/constants';
-import { IData } from '@app/models';
+import { getLinkLine, getVerticalDimensions } from '@app/helpers';
+import { IData, INodeSize } from '@app/models';
 
-const diagonal = d3linkHorizontal<d3.HierarchyPointLink<IData>, d3.HierarchyPointNode<IData>>()
-  .x((d) => d.y)
-  .y((d) => d.x);
+export const render = (selector: string, root: d3.HierarchyPointNode<IData>, width: number, size: INodeSize) => {
+  
+  const [y0,y1] = getVerticalDimensions<IData>(root);
+  
+  const svg = d3select(selector)
+    .append('svg')
+    .attr('viewBox', [0, 0, width, y1 - y0].join(' '));
 
-export const render = (
-  container: d3.Selection<SVGGElement, unknown, HTMLElement, any>,
-  root: d3.HierarchyPointNode<IData>
-) => {
+  const container = svg.append('g').attr('transform', `translate(${10},${size.dy - y0})`);
+
   const link = container
     .append('g')
     .classed('links', true)
@@ -23,7 +25,7 @@ export const render = (
     .data(root.links())
     .join('path')
     .classed('link', true)
-    .attr('d', (d) => diagonal({ ...d, source: { ...d.source, y: d.source.y + NODE_WIDTH } }));
+    .attr('d', (d) => getLinkLine({ ...d, source: { ...d.source, y: d.source.y + NODE_WIDTH } }));
 
   const node = container
     .append('g')

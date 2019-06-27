@@ -3,7 +3,7 @@ export interface IData {
   children: IData[];
 }
 
-export interface ISize {
+export interface INodeSize {
   dx: number;
   dy: number;
 }
