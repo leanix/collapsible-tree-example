@@ -1,29 +1,23 @@
 import '@assets/reset.css';
 
-import { json as d3json } from 'd3-fetch';
-import { hierarchy as d3hierarchy, tree as d3tree } from 'd3-hierarchy';
+import * as d3 from 'd3';
 
 import { render } from '@app/chart';
-import { NODE_HEIGHT } from '@app/constants';
-import { IData, INodeSize } from '@app/models';
+import { IData } from '@app/models';
 
 (async () => {
   try {
-    const data = await d3json('https://raw.githubusercontent.com/d3/d3-hierarchy/v1.1.8/test/data/flare.json');
+    const data = await d3.json('https://raw.githubusercontent.com/d3/d3-hierarchy/v1.1.8/test/data/flare.json');
 
-    const hierarchy = d3hierarchy<IData>(data);
-    const width = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    const root = d3.hierarchy<IData>(data);
 
-    const size: INodeSize = {
-      dx: width / (hierarchy.height + 1),
-      dy: NODE_HEIGHT + 10,
-    };
+    root.descendants().forEach((d) => {
+      d.data._children = d.children;
+      d.children = undefined;
+    });
 
-    const root = d3tree<IData>().nodeSize([size.dy, size.dx])(hierarchy);
-    
     // Render using D3
-    render('#app', root, width, size);
-
+    render(root);
   } catch (error) {
     console.log(error);
   }
