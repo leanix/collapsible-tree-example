@@ -1,4 +1,4 @@
-import { select as d3select } from 'd3-selection';
+import { select as d3select, selectAll as d3selectAll } from 'd3-selection';
 import { linkHorizontal as d3linkHorizontal } from 'd3-shape';
 
 import { NODE_HEIGHT, NODE_WIDTH } from '@app/constants';
@@ -14,7 +14,7 @@ export const render = (
 ) => {
   const link = container
     .append('g')
-    .classed('link', true)
+    .classed('links', true)
     .attr('fill', 'none')
     .attr('stroke', '#555')
     .attr('stroke-opacity', 0.4)
@@ -22,6 +22,7 @@ export const render = (
     .selectAll('path')
     .data(root.links())
     .join('path')
+    .classed('link', true)
     .attr('d', (d) => diagonal({ ...d, source: { ...d.source, y: d.source.y + NODE_WIDTH } }));
 
   const node = container
@@ -37,21 +38,43 @@ export const render = (
       d3select(nodes[i])
         .select('rect')
         .attr('fill', '#999');
+
+      d3select(nodes[i])
+        .select('circle.source')
+        .attr('r', 6);
+
+      d3selectAll<SVGPathElement, d3.HierarchyPointLink<IData>>('path.link')
+        .filter((linkNode) => {
+          return linkNode.source.data.name === d.data.name;
+        })
+        .attr('stroke-width', 4);
     })
     .on('mouseout', (d, i, nodes) => {
       d3select(nodes[i])
         .select('rect')
         .attr('fill', 'white');
+
+      d3select(nodes[i])
+        .select('circle.source')
+        .attr('r', 4);
+
+      d3selectAll<SVGPathElement, d3.HierarchyPointLink<IData>>('path.link')
+        .filter((linkNode) => {
+          return linkNode.source.data.name === d.data.name;
+        })
+        .attr('stroke-width', 1.5);
     });
 
   node
     .append('circle')
+    .classed('target', true)
     .filter((d) => Boolean(d.parent))
     .attr('fill', (d) => (d.children ? '#555' : '#999'))
     .attr('r', 4);
 
   node
     .append('circle')
+    .classed('source', true)
     .filter((d) => Boolean(d.children))
     .attr('cx', NODE_WIDTH)
     .attr('fill', (d) => (d.children ? '#555' : '#999'))
