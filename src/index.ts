@@ -1,4 +1,4 @@
-import '@assets/reset.css';
+import '@assets/styles.css';
 
 import * as d3 from 'd3';
 
@@ -18,7 +18,7 @@ import { IData } from '@app/models';
     });
 
     // Render using D3
-    render(root);
+    render('#app', root);
   } catch (error) {
     console.log(error);
   }

@@ -1,30 +1,14 @@
 import * as d3 from 'd3';
 
-import { MARGIN, NODE_HEIGHT, NODE_WIDTH, WIDTH } from '@app/constants';
+import { MARGIN, NODE_HEIGHT, NODE_WIDTH, TRANSITION_DURATION, WIDTH } from '@app/constants';
 import { getLinkLine } from '@app/helpers';
 import { IData } from '@app/models';
 
-const svg = d3
-  .select('#app')
-  .append('svg')
-  .style('font', '10px sans-serif')
-  .style('user-select', 'none');
+export const render = (selector: string, root: d3.HierarchyNode<IData>) => {
+  const svg = d3.select(selector).select('svg');
+  const gLink = svg.select('g.links');
+  const gNode = svg.select('g.nodes');
 
-const gLink = svg
-  .append('g')
-  .attr('fill', 'none')
-  .attr('stroke', '#555')
-  .attr('stroke-opacity', 0.4)
-  .attr('stroke-width', 1.5);
-
-const gNode = svg
-  .append('g')
-  .attr('cursor', 'pointer')
-  .attr('pointer-events', 'all');
-
-const duration = 500;
-
-export const render = (root: d3.HierarchyNode<IData>) => {
   // Compute the new tree layout.
   const rootTree = d3.tree<IData>().nodeSize([NODE_HEIGHT + 10, WIDTH / 6])(root);
 
@@ -43,7 +27,6 @@ export const render = (root: d3.HierarchyNode<IData>) => {
   });
 
   const height = right.x - left.x + MARGIN.top + MARGIN.bottom;
-
   svg.attr('viewBox', [-MARGIN.left, left.x - MARGIN.top, WIDTH, height].join(' '));
 
   // Update the nodes…
@@ -66,12 +49,12 @@ export const render = (root: d3.HierarchyNode<IData>) => {
           if (d.data.id === item.data.id) {
             d.children = d.children ? undefined : d.data._children;
           } else {
-            if (d.depth === item.depth && d.children) {
+            if (d.depth >= item.depth && d.children) {
               d.children = undefined;
             }
           }
         });
-        render(root);
+        render(selector, root);
       }
     })
     .on('mouseover', (d, i, items) => {
@@ -84,11 +67,20 @@ export const render = (root: d3.HierarchyNode<IData>) => {
           .select('circle.source')
           .attr('r', 5);
 
+        d3.selectAll<SVGCircleElement, d3.HierarchyPointNode<IData>>('circle.target')
+          .filter((target) => {
+            if (target.parent) {
+              return target.parent.data.id === d.data.id;
+            }
+            return false;
+          })
+          .attr('fill', '#555');
+
         d3.selectAll<SVGPathElement, d3.HierarchyPointLink<IData>>('path.link')
           .filter((linkNode) => {
             return linkNode.source.data.id === d.data.id;
           })
-          .attr('stroke-width', 4);
+          .attr('stroke', '#555');
       }
     })
     .on('mouseout', (d, i, items) => {
@@ -101,11 +93,20 @@ export const render = (root: d3.HierarchyNode<IData>) => {
           .select('circle.source')
           .attr('r', 4);
 
+        d3.selectAll<SVGCircleElement, d3.HierarchyPointNode<IData>>('circle.target')
+          .filter((target) => {
+            if (target.parent) {
+              return target.parent.data.id === d.data.id;
+            }
+            return false;
+          })
+          .attr('fill', '#999');
+
         d3.selectAll<SVGPathElement, d3.HierarchyPointLink<IData>>('path.link')
           .filter((linkNode) => {
             return linkNode.source.data.id === d.data.id;
           })
-          .attr('stroke-width', 1.5);
+          .attr('stroke', '#999');
       }
     });
 
@@ -149,7 +150,7 @@ export const render = (root: d3.HierarchyNode<IData>) => {
   const nodeUpdate = node
     .merge(nodeEnter)
     .transition()
-    .duration(duration)
+    .duration(TRANSITION_DURATION)
     .attr('transform', (d) => `translate(${d.y},${d.x})`)
     .attr('fill-opacity', 1)
     .attr('stroke-opacity', 1);
@@ -158,7 +159,7 @@ export const render = (root: d3.HierarchyNode<IData>) => {
   const nodeExit = node
     .exit<d3.HierarchyPointNode<IData>>()
     .transition()
-    .duration(duration)
+    .duration(TRANSITION_DURATION)
     .remove()
     .attr('transform', (d) => {
       const x = d.parent ? d.parent.x : 0;
@@ -178,6 +179,10 @@ export const render = (root: d3.HierarchyNode<IData>) => {
     .enter()
     .append('path')
     .classed('link', true)
+    .attr('fill', 'none')
+    .attr('stroke', '#999')
+    .attr('stroke-opacity', 1)
+    .attr('stroke-width', 1.5)
     .attr('d', (d) => {
       const x = d.source ? d.source.x : 0;
       const y = d.source ? d.source.y + NODE_WIDTH : NODE_WIDTH;
@@ -189,14 +194,14 @@ export const render = (root: d3.HierarchyNode<IData>) => {
   link
     .merge(linkEnter)
     .transition()
-    .duration(duration)
+    .duration(TRANSITION_DURATION)
     .attr('d', (d) => getLinkLine({ ...d, source: { ...d.source, y: d.source.y + NODE_WIDTH } }));
 
   // Transition exiting nodes to the parent's new position.
   link
     .exit<d3.HierarchyPointLink<IData>>()
     .transition()
-    .duration(duration)
+    .duration(TRANSITION_DURATION)
     .remove()
     .attr('d', (d) => {
       const x = d.source ? d.source.x : 0;
