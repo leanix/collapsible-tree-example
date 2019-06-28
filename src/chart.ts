@@ -55,18 +55,24 @@ export const render = (root: d3.HierarchyNode<IData>) => {
     .append('g')
     .attr('transform', (d) => {
       const x = d.parent ? d.parent.x : 0;
-      const y = d.parent ? d.parent.y : 0;
+      const y = d.parent ? d.parent.y + NODE_WIDTH : NODE_WIDTH;
       return `translate(${y},${x})`;
     })
     .attr('fill-opacity', 0)
     .attr('stroke-opacity', 0)
     .on('click', (item) => {
-      root.descendants().forEach((d) => {
-        if (d.data.id === item.data.id) {
-          d.children = d.children ? undefined : d.data._children;
-        }
-      });
-      render(root);
+      if (item.data._children) {
+        root.descendants().forEach((d) => {
+          if (d.data.id === item.data.id) {
+            d.children = d.children ? undefined : d.data._children;
+          } else {
+            if (d.depth === item.depth && d.children) {
+              d.children = undefined;
+            }
+          }
+        });
+        render(root);
+      }
     })
     .on('mouseover', (d, i, items) => {
       if (d.data._children) {
@@ -156,7 +162,7 @@ export const render = (root: d3.HierarchyNode<IData>) => {
     .remove()
     .attr('transform', (d) => {
       const x = d.parent ? d.parent.x : 0;
-      const y = d.parent ? d.parent.y : 0;
+      const y = d.parent ? d.parent.y + NODE_WIDTH : NODE_WIDTH;
       return `translate(${y},${x})`;
     })
     .attr('fill-opacity', 0)
@@ -174,7 +180,7 @@ export const render = (root: d3.HierarchyNode<IData>) => {
     .classed('link', true)
     .attr('d', (d) => {
       const x = d.source ? d.source.x : 0;
-      const y = d.source ? d.source.y : 0;
+      const y = d.source ? d.source.y + NODE_WIDTH : NODE_WIDTH;
       const o = { ...d.source, x, y };
       return getLinkLine({ source: o, target: o });
     });
@@ -194,7 +200,7 @@ export const render = (root: d3.HierarchyNode<IData>) => {
     .remove()
     .attr('d', (d) => {
       const x = d.source ? d.source.x : 0;
-      const y = d.source ? d.source.y : 0;
+      const y = d.source ? d.source.y + NODE_WIDTH : NODE_WIDTH;
       const o = { ...d.source, x, y };
       return getLinkLine({ source: o, target: o });
     });
