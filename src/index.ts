@@ -11,7 +11,8 @@ import { IData } from '@app/models';
 
     const root = d3.hierarchy<IData>(data);
 
-    root.descendants().forEach((d) => {
+    root.descendants().forEach((d, i) => {
+      d.data.id = String(i);
       d.data._children = d.children;
       d.children = undefined;
     });

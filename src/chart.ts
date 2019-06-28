@@ -22,6 +22,8 @@ const gNode = svg
   .attr('cursor', 'pointer')
   .attr('pointer-events', 'all');
 
+const duration = 500;
+
 export const render = (root: d3.HierarchyNode<IData>) => {
   // Compute the new tree layout.
   const rootTree = d3.tree<IData>().nodeSize([NODE_HEIGHT + 10, WIDTH / 6])(root);
@@ -45,7 +47,7 @@ export const render = (root: d3.HierarchyNode<IData>) => {
   svg.attr('viewBox', [-MARGIN.left, left.x - MARGIN.top, WIDTH, height].join(' '));
 
   // Update the nodes…
-  const node = gNode.selectAll<SVGGElement, d3.HierarchyNode<IData>>('g').data(nodes, (d) => d.data.name);
+  const node = gNode.selectAll<SVGGElement, d3.HierarchyNode<IData>>('g').data(nodes, (d) => d.data.id);
 
   // Enter any new nodes at the parent's previous position.
   const nodeEnter = node
@@ -60,7 +62,7 @@ export const render = (root: d3.HierarchyNode<IData>) => {
     .attr('stroke-opacity', 0)
     .on('click', (item) => {
       root.descendants().forEach((d) => {
-        if (d.data.name === item.data.name) {
+        if (d.data.id === item.data.id) {
           d.children = d.children ? undefined : d.data._children;
         }
       });
@@ -78,7 +80,7 @@ export const render = (root: d3.HierarchyNode<IData>) => {
 
         d3.selectAll<SVGPathElement, d3.HierarchyPointLink<IData>>('path.link')
           .filter((linkNode) => {
-            return linkNode.source.data.name === d.data.name;
+            return linkNode.source.data.id === d.data.id;
           })
           .attr('stroke-width', 4);
       }
@@ -95,7 +97,7 @@ export const render = (root: d3.HierarchyNode<IData>) => {
 
         d3.selectAll<SVGPathElement, d3.HierarchyPointLink<IData>>('path.link')
           .filter((linkNode) => {
-            return linkNode.source.data.name === d.data.name;
+            return linkNode.source.data.id === d.data.id;
           })
           .attr('stroke-width', 1.5);
       }
@@ -105,7 +107,7 @@ export const render = (root: d3.HierarchyNode<IData>) => {
     .append('circle')
     .classed('target', true)
     .filter((d) => Boolean(d.parent))
-    .attr('fill',  '#999')
+    .attr('fill', '#999')
     .attr('r', 4);
 
   nodeEnter
@@ -140,6 +142,8 @@ export const render = (root: d3.HierarchyNode<IData>) => {
   // Transition nodes to their new position.
   const nodeUpdate = node
     .merge(nodeEnter)
+    .transition()
+    .duration(duration)
     .attr('transform', (d) => `translate(${d.y},${d.x})`)
     .attr('fill-opacity', 1)
     .attr('stroke-opacity', 1);
@@ -147,6 +151,8 @@ export const render = (root: d3.HierarchyNode<IData>) => {
   // Transition exiting nodes to the parent's new position.
   const nodeExit = node
     .exit<d3.HierarchyPointNode<IData>>()
+    .transition()
+    .duration(duration)
     .remove()
     .attr('transform', (d) => {
       const x = d.parent ? d.parent.x : 0;
@@ -159,7 +165,7 @@ export const render = (root: d3.HierarchyNode<IData>) => {
   // Update the links…
   const link = gLink
     .selectAll<SVGPathElement, d3.HierarchyPointLink<IData>>('path')
-    .data(links, (d) => d.target.data.name);
+    .data(links, (d) => d.target.data.id);
 
   // Enter any new links at the parent's previous position.
   const linkEnter = link
@@ -174,11 +180,17 @@ export const render = (root: d3.HierarchyNode<IData>) => {
     });
 
   // Transition links to their new position.
-  link.merge(linkEnter).attr('d', (d) => getLinkLine({ ...d, source: { ...d.source, y: d.source.y + NODE_WIDTH } }));
+  link
+    .merge(linkEnter)
+    .transition()
+    .duration(duration)
+    .attr('d', (d) => getLinkLine({ ...d, source: { ...d.source, y: d.source.y + NODE_WIDTH } }));
 
   // Transition exiting nodes to the parent's new position.
   link
     .exit<d3.HierarchyPointLink<IData>>()
+    .transition()
+    .duration(duration)
     .remove()
     .attr('d', (d) => {
       const x = d.source ? d.source.x : 0;
