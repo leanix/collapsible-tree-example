@@ -1,41 +1,23 @@
 /* Global Styles */
 
 * {
-  font-family: 'Roboto', Arial, sans-serif;
-  color: #616161;
+  margin: 0;
+  border: 0;
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  margin: 0;
+  font-family: 'Roboto', Arial, sans-serif;
+  color: #616161;
 }
 
-.container {
-  display: flex;
-  flex-direction: row;
-}
-
-router-outlet + * {
-  padding: 0 16px;
-}
-
-/* Text */
-
-h1 {
-  font-size: 32px;
-}
-
-h2 {
-  font-size: 20px;
-}
-
-h1,
-h2 {
-  font-weight: lighter;
-}
-
-p {
-  font-size: 14px;
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }

@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { CHART_WIDTH, NODE_HEIGHT, NODE_WIDTH } from './chart.constants';
 import { IChartData, IChartDimension } from './chart.models';
@@ -13,21 +13,23 @@ import { ChartService } from './chart.service';
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.css']
 })
-export class ChartComponent {
+export class ChartComponent implements OnInit {
   nodes: Observable<d3.HierarchyPointNode<IChartData>[]>;
   links: Observable<d3.HierarchyPointLink<IChartData>[]>;
   root: Observable<d3.HierarchyPointNode<IChartData>>;
 
   dimensions: Observable<IChartDimension>;
   dy = NODE_HEIGHT + 10;
-  viewBoxProps: Observable<string>;
+  svgViewBoxProps: Observable<string>;
   gContainerProps: Observable<string>;
   nodeWidth = NODE_WIDTH;
   nodeHeight = NODE_HEIGHT;
 
   constructor(private dataService: ChartService) {
     this.root = dataService.getData();
+  }
 
+  ngOnInit() {
     this.nodes = this.root.pipe(
       map((data) => {
         return data.descendants();
@@ -60,7 +62,7 @@ export class ChartComponent {
       })
     );
 
-    this.viewBoxProps = this.dimensions.pipe(
+    this.svgViewBoxProps = this.dimensions.pipe(
       map((dim) => {
         return `0 0 ${dim.maxX} ${dim.maxY - dim.minY + this.dy * 2}`;
       })
@@ -78,6 +80,6 @@ export class ChartComponent {
   }
 
   getNodeCoordinates(node) {
-    return `translate(${node.y},${node.x})`
+    return `translate(${node.y},${node.x})`;
   }
 }

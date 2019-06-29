@@ -1,0 +1,15 @@
+.link {
+  fill: none;
+  stroke-width: 1.5;
+  stroke: #999;
+}
+
+.node > text {
+  font-size: 10px;
+}
+
+.node > rect {
+  fill: white;
+  stroke-width: 2;
+  stroke: #999;
+}
