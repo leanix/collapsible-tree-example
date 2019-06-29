@@ -2,11 +2,25 @@
 
 <svg [attr.viewBox]="viewBoxProps | async">
   <g [attr.transform]="gContainerProps | async">
-    <g class="nodes">
-      <g *ngFor="let node of nodes | async" class="node"></g>
+    <g class="nodes" stroke-linejoin="round" stroke-width="3">
+      <g *ngFor="let node of nodes | async" class="node" [attr.translate]="getNodeCoordinates(node)">
+        <circle fill="#999" r="4" />
+        <circle fill="#999" r="4" [attr.cx]="nodeWidth" />
+        <rect
+          x="0"
+          [attr.y]="-nodeHeight / 2"
+          fill="white"
+          [attr.width]="nodeWidth"
+          rx="6"
+          [attr.height]="nodeHeight"
+          strole-width="3"
+          stroke="#999"
+        />
+        <text dy="0.31em" x="6" text-anchor="start" stroke="white">{{ node.data.name }}</text>
+      </g>
     </g>
-    <g class="links">
-      <g *ngFor="let link of links | async" class="link"></g>
+    <g class="links" fill="none" stroke="#555" stroke-opacity="0.4" stroke-width="1.5">
+      <path *ngFor="let link of links | async" class="link" [attr.d]="getLinkLine(link)"></path>
     </g>
   </g>
 </svg>

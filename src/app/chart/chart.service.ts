@@ -25,4 +25,15 @@ export class ChartService {
       })
     );
   }
+
+  getLinkLine(link) {
+    return d3
+      .linkHorizontal<d3.HierarchyPointLink<IChartData>, d3.HierarchyPointNode<IChartData>>()
+      .x((d) => d.y)
+      .y((d) => d.x)(link);
+  }
+
+  getNodeCoordinates(node) {
+    return `translate(${node.y},${node.x})`;
+  }
 }
