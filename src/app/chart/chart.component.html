@@ -1,1 +1,12 @@
 <h2>Collapsible Tree</h2>
+
+<svg [attr.viewBox]="viewBoxProps | async">
+  <g [attr.transform]="gContainerProps | async">
+    <g class="nodes">
+      <g *ngFor="let node of nodes | async" class="node"></g>
+    </g>
+    <g class="links">
+      <g *ngFor="let link of links | async" class="link"></g>
+    </g>
+  </g>
+</svg>
