@@ -1,17 +1,3 @@
-<h2>Collapsible Tree</h2>
-
-<svg [attr.viewBox]="svgViewBoxProps | async">
-  <g [attr.transform]="gContainerProps | async">
-    <g class="links">
-      <path *ngFor="let link of links | async" class="link" [attr.d]="getLinkLine(link)"></path>
-    </g>
-    <g class="nodes">
-      <g *ngFor="let node of nodes | async" class="node" [attr.transform]="getNodeCoordinates(node)">
-        <circle fill="#999" r="4" />
-        <circle fill="#999" r="4" [attr.cx]="nodeWidth" />
-        <rect x="0" [attr.y]="-nodeHeight / 2" [attr.width]="nodeWidth" rx="6" ry="6" [attr.height]="nodeHeight" />
-        <text dy="0.31em" x="6" text-anchor="start" class="noselect">{{ node.data.name }}</text>
-      </g>
-    </g>
-  </g>
+<svg width="301" height="301" viewBox="-20 -150 301 301">
+  <g node label="root"></g>
 </svg>
