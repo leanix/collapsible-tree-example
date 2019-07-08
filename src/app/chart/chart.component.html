@@ -1,6 +1,6 @@
-<svg [attr.width]="301"
-     [attr.height]="expanded ? 501 : 301"
-     [attr.viewBox]="expanded ? '-20 -250 301 501' : '-20 -150 301 301'">
+<svg [attr.width]="width"
+     [attr.height]="height"
+     [attr.viewBox]="viewBox">
   <g node label="root"></g>
   <ng-container *ngIf="expanded">
     <g node label="some" transform="translate(64, -192)"></g>

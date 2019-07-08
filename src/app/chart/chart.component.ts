@@ -10,6 +10,20 @@ export class ChartComponent {
 
   expanded = false;
 
+  get width() {
+    return 301;
+  }
+
+  get height() {
+    return this.expanded ? 501 : 301;
+  }
+
+  get viewBox() {
+    return this.expanded
+      ? '-20 -250 301 501'
+      : '-20 -150 301 301'
+  }
+
   @HostListener('click')
   toggleExpand() {
     this.expanded = !this.expanded;
