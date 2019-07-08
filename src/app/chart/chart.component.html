@@ -1,3 +1,14 @@
-<svg width="301" height="301" viewBox="-20 -150 301 301">
+<svg [attr.width]="301"
+     [attr.height]="expanded ? 501 : 301"
+     [attr.viewBox]="expanded ? '-20 -250 301 501' : '-20 -150 301 301'">
   <g node label="root"></g>
+  <ng-container *ngIf="expanded">
+    <g node label="some" transform="translate(64, -192)"></g>
+    <g node label="thing" transform="translate(64, -128)"></g>
+    <g node label="foo" transform="translate(64, -64)"></g>
+    <g node label="bar" transform="translate(64, 0)"></g>
+    <g node label="baz" transform="translate(64, 64)"></g>
+    <g node label="and" transform="translate(64, 128)"></g>
+    <g node label="more" transform="translate(64, 192)"></g>
+  </ng-container>
 </svg>

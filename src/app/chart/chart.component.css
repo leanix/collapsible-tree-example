@@ -3,4 +3,9 @@
   width: 301px;
   height: 301px;
   background-color: cornsilk;
+  overflow: auto;
+}
+
+svg {
+  display: block;
 }

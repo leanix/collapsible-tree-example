@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 
 @Component({
   selector: 'chart',
@@ -7,4 +7,10 @@ import { Component } from '@angular/core';
 })
 export class ChartComponent {
   constructor() {}
+  expanded = false;
+
+  @HostListener('click')
+  toggleExpand() {
+    this.expanded = !this.expanded;
+  }
 }
