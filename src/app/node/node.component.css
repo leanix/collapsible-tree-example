@@ -1,4 +1,5 @@
 .label-text {
   stroke: none;
   fill: white;
+  user-select: none;
 }
