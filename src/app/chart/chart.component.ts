@@ -9,29 +9,31 @@ export class ChartComponent {
   constructor(private elementRef: ElementRef) {}
 
   expanded = false;
+  height = 300;
+  top = -150;
 
   get width() {
     return 300;
   }
 
-  get height() {
-    return this.expanded ? 500 : 300;
-  }
-
   get viewBox() {
-    return this.expanded
-      ? '-20 -250 300 500'
-      : '-20 -150 300 300'
+    return `-20 ${this.top} ${this.width} ${this.height}`;
   }
 
   @HostListener('click')
   toggleExpand() {
     this.expanded = !this.expanded;
 
-    if (this.expanded) {
-      window.requestAnimationFrame(() => {
-        this.elementRef.nativeElement.scroll(0, 100);
-      });
-    }
+    const newHeight = this.expanded ? 500 : 300;
+    const newTop = this.expanded ? -250 : -150;
+
+    const scrollOffset = this.top - newTop - this.elementRef.nativeElement.scrollTop;
+
+    this.height = newHeight;
+    this.top = newTop;
+
+    window.requestAnimationFrame(() => {
+      this.elementRef.nativeElement.scroll(0, scrollOffset);
+    });
   }
 }
