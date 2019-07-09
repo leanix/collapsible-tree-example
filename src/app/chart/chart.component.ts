@@ -24,13 +24,12 @@ export class ChartComponent {
   toggleExpand() {
     this.expanded = !this.expanded;
 
-    const newHeight = this.expanded ? 500 : 300;
-    const newTop = this.expanded ? -250 : -150;
+    const deltaTop = this.expanded ? 100 : -100;
+    const deltaBottom = this.expanded ? 100 : -100;
+    const scrollOffset = deltaTop - this.elementRef.nativeElement.scrollTop;
 
-    const scrollOffset = this.top - newTop - this.elementRef.nativeElement.scrollTop;
-
-    this.height = newHeight;
-    this.top = newTop;
+    this.height += deltaTop + deltaBottom;
+    this.top -= deltaTop;
 
     window.requestAnimationFrame(() => {
       this.elementRef.nativeElement.scroll(0, scrollOffset);
