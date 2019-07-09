@@ -11,17 +11,17 @@ export class ChartComponent {
   expanded = false;
 
   get width() {
-    return 301;
+    return 300;
   }
 
   get height() {
-    return this.expanded ? 501 : 301;
+    return this.expanded ? 500 : 300;
   }
 
   get viewBox() {
     return this.expanded
-      ? '-20 -250 301 501'
-      : '-20 -150 301 301'
+      ? '-20 -250 300 500'
+      : '-20 -150 300 300'
   }
 
   @HostListener('click')
